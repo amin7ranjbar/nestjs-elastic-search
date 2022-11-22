@@ -43,7 +43,7 @@ export default class SearchService {
   async search(text: string, offset?: number, limit?: number, startId = 0) {
     let separateCount = 0;
     if (startId) {
-      separateCount = await this.count(text, ['title', 'paragraphs']);
+      separateCount = await this.count(text, ['title', 'content']);
     }
     const { body } =
       await this.elasticsearchService.search<ArticleSearchResult>({
@@ -53,10 +53,10 @@ export default class SearchService {
         body: {
           query: {
             bool: {
-              should: {
+              must: {
                 multi_match: {
                   query: text,
-                  fields: ['title', 'paragraphs'],
+                  fields: ['title', 'content'],
                 },
               },
               filter: {
@@ -69,8 +69,8 @@ export default class SearchService {
             },
           },
           sort: {
-            id: {
-              order: 'asc',
+            _score: {
+              order: 'desc',
             },
           },
         },
