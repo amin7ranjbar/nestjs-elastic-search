@@ -20,6 +20,8 @@ import * as Joi from 'joi';
         ELASTICSEARCH_NODE: Joi.string(),
         ELASTICSEARCH_USERNAME: Joi.string(),
         ELASTICSEARCH_PASSWORD: Joi.string(),
+        PGADMIN_DEFAULT_EMAIL: Joi.string(),
+        PGADMIN_DEFAULT_PASSWORD: Joi.string(),
       }),
     }),
     TypeOrmModule.forRootAsync({
