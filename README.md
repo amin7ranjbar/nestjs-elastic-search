@@ -20,15 +20,20 @@ sudo docker-compose run -d
 ```
 
 #### Running the app
+- development
 ```bash
-# development
-$ npm run start
+npm run start
 
-# watch mode
-$ npm run start:dev
+```
+- watch mode
+```bash
+npm run start:dev
 
-# production mode
-$ npm run start:prod
+```
+- production mode
+```bash
+npm run start:prod
+
 ```
 
 ## Technology
