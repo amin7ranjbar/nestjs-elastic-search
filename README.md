@@ -19,6 +19,9 @@ Run command below for pull and run Docker images:
 sudo docker-compose run -d
 ```
 
+#### Environment
+Create **.env** file like [.env.example](https://github.com/amin7ranjbar/nestjs-elastic-search/blob/master/.env.example)
+
 #### Running the app
 - development
 ```bash
@@ -35,6 +38,12 @@ npm run start:dev
 npm run start:prod
 
 ```
+
+## URLs
+- [Document or Swagger](http://localhost:3000/api/)
+- [pgAdmin](http://localhost:8080/)
+- [Kibana](http://localhost:5601/)
+- [Elasticsearch](http://localhost:9200/)
 
 ## Technology
 - Typescript
