@@ -26,14 +26,14 @@ services:
     networks:
       - postgres
  
-  es01:
+  elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.9.1
-    container_name: es01
+    container_name: elasticsearch
     environment:
-      - node.name=es01
+      - node.name=elasticsearch
       - cluster.name=es-docker-cluster
       - discovery.seed_hosts=es02,es03
-      - cluster.initial_master_nodes=es01,es02,es03
+      - cluster.initial_master_nodes=elasticsearch,es02,es03
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     ulimits:
@@ -52,8 +52,8 @@ services:
     environment:
       - node.name=es02
       - cluster.name=es-docker-cluster
-      - discovery.seed_hosts=es01,es03
-      - cluster.initial_master_nodes=es01,es02,es03
+      - discovery.seed_hosts=elasticsearch,es03
+      - cluster.initial_master_nodes=elasticsearch,es02,es03
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     ulimits:
@@ -70,8 +70,8 @@ services:
     environment:
       - node.name=es03
       - cluster.name=es-docker-cluster
-      - discovery.seed_hosts=es01,es02
-      - cluster.initial_master_nodes=es01,es02,es03
+      - discovery.seed_hosts=elasticsearch,es02
+      - cluster.initial_master_nodes=elasticsearch,es02,es03
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     ulimits:
@@ -82,7 +82,15 @@ services:
       - data03:/usr/share/elasticsearch/data
     networks:
       - elastic
- 
+  kibana:
+    image: kibana:7.8.1
+    container_name: kibana
+    volumes:
+      - ./kibana.yaml:/usr/share/kibana/config/kibana.yml
+    ports:
+      - 5601:5601
+    networks:
+      - elastic
 volumes:
   data01:
     driver: local
