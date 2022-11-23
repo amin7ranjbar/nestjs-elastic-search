@@ -35,7 +35,7 @@ services:
     image: elasticsearch:7.8.1
     container_name: elasticsearch
     volumes:
-      - ./data/elasticsearch:/var/lib/elasticsearch/data
+      - elastic-data:/usr/share/elasticsearch/data
     environment:
       discovery.type: 'single-node'
       xpack.security.enabled: 'true'
@@ -53,7 +53,11 @@ services:
       ELASTICSEARCH_USERNAME: ${ELASTICSEARCH_USERNAME}
       ELASTICSEARCH_PASSWORD: ${ELASTICSEARCH_PASSWORD}
     network_mode: "host"
-    
+
+volumes:
+  elastic-data:
+    driver: local
+
 networks:
   postgres:
     driver: bridge
