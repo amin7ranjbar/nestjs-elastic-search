@@ -1,18 +1,21 @@
 version: "3"
 services:
   postgres:
+    restart: always
     container_name: postgres
     image: postgres:latest
     ports:
       - "5432:5432"
     volumes:
       - ./data/postgres:/data/postgres
-    env_file:
-      - .env
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
     networks:
       - postgres
  
   pgadmin:
+    restart: always
     links:
       - postgres:postgres
     container_name: pgadmin
@@ -21,89 +24,36 @@ services:
       - "8080:80"
     volumes:
       - ./data/pgadmin:/root/.pgadmin
-    env_file:
-      - .env
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
     networks:
       - postgres
  
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.1
+    restart: always
+    image: elasticsearch:7.8.1
     container_name: elasticsearch
-    environment:
-      - node.name=elasticsearch
-      - cluster.name=es-docker-cluster
-      - discovery.seed_hosts=es02,es03
-      - cluster.initial_master_nodes=elasticsearch,es02,es03
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
     volumes:
-      - data01:/usr/share/elasticsearch/data
-    ports:
-      - 9200:9200
-    networks:
-      - elastic
-  es02:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.1
-    container_name: es02
+      - ./data/elasticsearch:/var/lib/elasticsearch/data
     environment:
-      - node.name=es02
-      - cluster.name=es-docker-cluster
-      - discovery.seed_hosts=elasticsearch,es03
-      - cluster.initial_master_nodes=elasticsearch,es02,es03
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    volumes:
-      - data02:/usr/share/elasticsearch/data
-    networks:
-      - elastic
-  es03:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.1
-    container_name: es03
-    environment:
-      - node.name=es03
-      - cluster.name=es-docker-cluster
-      - discovery.seed_hosts=elasticsearch,es02
-      - cluster.initial_master_nodes=elasticsearch,es02,es03
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    volumes:
-      - data03:/usr/share/elasticsearch/data
-    networks:
-      - elastic
+      discovery.type: 'single-node'
+      xpack.security.enabled: 'true'
+      ELASTIC_USERNAME: ${ELASTICSEARCH_USERNAME}
+      ELASTIC_PASSWORD: ${ELASTICSEARCH_PASSWORD}
+    network_mode: "host"
+
   kibana:
+    restart: always
     image: kibana:7.8.1
     container_name: kibana
-    ports:
-      - 5601:5601
     environment:
-      - server.host=0.0.0.0
-      - elasticsearch.hosts= ["http://elasticsearch:9200"]
-      - elasticsearch.username=elastic
-      - elasticsearch.password=admin
-    networks:
-      - elastic
-volumes:
-  data01:
-    driver: local
-  data02:
-    driver: local
-  data03:
-    driver: local
- 
+      XPACK_SECURITY_ENABLED: 'true'
+      ELASTICSEARCH_HOSTS: ${ELASTICSEARCH_NODE}
+      ELASTICSEARCH_USERNAME: ${ELASTICSEARCH_USERNAME}
+      ELASTICSEARCH_PASSWORD: ${ELASTICSEARCH_PASSWORD}
+    network_mode: "host"
+    
 networks:
   postgres:
-    driver: bridge
-  elastic:
     driver: bridge
