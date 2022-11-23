@@ -3,12 +3,12 @@ Sample backend application and REST-API with Nestjs, Docker, Postgres, Elasticse
 
 ## Usage
 
-### Clone project
+#### Clone project
 ```bash
 git clone https://github.com/amin7ranjbar/nestjs-elastic-search.git
 ```
 
-### Install Requirement
+#### Install Requirement
 Run command below for install npm packages:
 ```bash
 npm i
@@ -19,7 +19,7 @@ Run command below for pull and run Docker images:
 sudo docker-compose run -d
 ```
 
-### Running the app
+#### Running the app
 ```bash
 # development
 $ npm run start
